@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Data files (large raw and processed data)
+data/
+pt_data/
+*.pt
+*.nc
+
+# Model checkpoints
+checkpoints/
+
+# Generated output
+outputs/
+
+# IDE / editor settings
+.vscode/
