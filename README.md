@@ -9,23 +9,18 @@ PythonScientificCalculation/
 │   ├── config.py          # Configuration
 │   ├── dataset.py         # Dataset class
 │   ├── model.py           # ClimateUNet model
-│   ├── Show.py            # Visualization animator
-│   └── visualize.py        # Utilities
-├── scripts/               # Training & testing scripts
+│   └── animator.py        # Visualization animator
+├── scripts/               # Training, testing & data scripts
 │   ├── train.py
-│   └── test_model.py
+│   ├── test_model.py
+│   ├── converter.py       # Raw NC data → PyTorch tensors
+│   └── installer.py       # ERA5-Land data downloader
 ├── demos/                 # Visualization demos
 │   └── climate_visualizer.py
-├── notebooks/             # Jupyter notebooks
-│   └── train.ipynb
 ├── checkpoints/           # Model checkpoints
-│   ├── model_final.pt
-│   └── optimizer_final.pt
-├── pt_data/              # Processed data
-├── data/                 # Raw data
-├── configs/              # Additional configs
-├── outputs/              # Output files
-└── converter.py, installer.py  # Data processing utilities
+├── pt_data/               # Processed data
+├── data/                  # Raw data
+└── docs/                  # Documentation
 ```
 
 ## Quick Start

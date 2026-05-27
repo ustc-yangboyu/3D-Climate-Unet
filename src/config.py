@@ -4,7 +4,6 @@ DATA_DIR = "data"
 PT_DATA_DIR = "pt_data"
 PT_DATA_FILE = "era5_data.pt"
 TERRAIN_DATA_FILE = "terrain_data.pt"
-OUTPUT_DIR = "outputs"
 
 IN_CHANNELS = 12
 OUT_CHANNELS = 12
@@ -18,15 +17,8 @@ ACCUMULATE_STEPS = 10
 NUM_EPOCHS = 15
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 1e-5
-GRADIENT_CLIP = 1.0
 
 TRAIN_RATIO = 0.7
 VAL_RATIO = 0.15
-TEST_RATIO = 0.15
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-SEED = 42
-
-LOG_INTERVAL = 10
-SAVE_INTERVAL = 5

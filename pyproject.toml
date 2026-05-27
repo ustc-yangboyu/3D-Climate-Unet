@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "climate-prediction"
+version = "0.1.0"
+description = "Climate prediction using 3D U-Net with attention mechanisms"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0.0",
+    "matplotlib>=3.7.0",
+    "numpy>=1.24.0",
+    "tqdm>=4.65.0",
+    "xarray>=2023.1.0",
+    "cdsapi>=0.5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

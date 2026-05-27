@@ -1,21 +1,21 @@
 from matplotlib.animation import FuncAnimation
-from src.dataset import ClimateDataset
-from src.model import ClimateUNet
-import matplotlib.pyplot as plt
-from src.config import DEVICE
 from pathlib import Path
-import torch
-import sys
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import matplotlib.pyplot as plt
+import torch
+
+from src.config import DEVICE
+from src.dataset import ClimateDataset
+from src.models import ClimateUNet
+
 plt.rcParams['font.size'] = 10
 plt.rcParams['figure.dpi'] = 100
 
 class ClimateVisualizer:
 
     CHANNEL_NAMES = [
-        't2m', 'u10', 'v10', 't850', 'sp', 'msl',
-        'tcw', 'tcwv', 'cp', 'lsrp', 'skt', 'snow'
+        't2m', 'skt', 'd2m', 'u10', 'v10', 'ssrd',
+        'ssr', 'sp', 'stl1', 'sshf', 'swvl1', 'lmlt'
     ]
 
     def __init__(self, model_path: str = "checkpoints/ckpt_final.pt"):

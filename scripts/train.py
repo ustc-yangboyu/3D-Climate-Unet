@@ -3,12 +3,12 @@ import os
 
 from torch.utils.data import DataLoader
 from src.dataset import ClimateDataset
-from src.model import ClimateUNet
+from src.models import ClimateUNet
 from src.config import DEVICE, PT_DATA_DIR, PT_DATA_FILE, TERRAIN_DATA_FILE, BATCH_SIZE, ACCUMULATE_STEPS, NUM_EPOCHS, LEARNING_RATE, WEIGHT_DECAY
 import torch.optim as optim
 import torch.nn as nn
 from tqdm import tqdm
-from src import Show
+from src.animator import Animator
 import torch
 
 if __name__ == "__main__":
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     eval_dataset = ClimateDataset(
         data_path=PT_DATA_DIR + "/" + PT_DATA_FILE,
         terrain_path=PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
-        split = "test"
+        split="val"
     )
     model = ClimateUNet(
         terrain_data = train_dataset.terrain.repeat(2, 1, 1), 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         start_epoch = checkpoint["epoch"] + 1
         print(f"Resumed from epoch {checkpoint['epoch']}. Continuing from epoch {start_epoch + 1}/{args.epochs}")
 
-    animator = Show.Animator(xlabel = "Epoch", ylabel = "Loss", legend = ["Train", "Eval"])
+    animator = Animator(xlabel = "Epoch", ylabel = "Loss", legend = ["Train", "Eval"])
 
     cnt = 0
     for epoch in range(start_epoch, args.epochs):

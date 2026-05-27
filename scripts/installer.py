@@ -1,6 +1,6 @@
-import cdsapi
-import os
 from pathlib import Path
+
+import cdsapi
 
 AREA = [34.6, 114.9, 29.4, 119.7]
 
@@ -8,8 +8,7 @@ YEAR = ['2020', '2021', '2022', '2023', '2024', '2025']
 MONTH = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 OUTPUT_DIR = Path("data")
-OUTPUT_DIR.mkdir(exist_ok = True)
-os.chdir("data-test")
+OUTPUT_DIR.mkdir(exist_ok=True)
 
 DATASET = "reanalysis-era5-land"
 
@@ -60,47 +59,22 @@ TIME = [
 client = cdsapi.Client()
 
 for year in YEAR:
-    path = Path(year)
-    path.mkdir(exist_ok = True)
-    os.chdir(year)
     for month in MONTH:
-        path = Path(month)
-        path.mkdir(exist_ok = True)
-        os.chdir(month)
+        for suffix, variables in [("V1", VARIABLES1), ("V2", VARIABLES2)]:
+            target_dir = OUTPUT_DIR / year / month / suffix
+            target_dir.mkdir(parents=True, exist_ok=True)
 
-        path = Path("V1")
-        path.mkdir(exist_ok = True)
-        os.chdir("V1")
-        REQUEST = {
-            "variable" : VARIABLES1,
-            "year" : year,
-            "month" : month,
-            "day" : DAY, 
-            "time" : TIME, 
-            "data_format" : "netcdf", 
-            "download_format" : "unarchived",
-            "area" : AREA,
-        }
-        if not os.listdir():
-            client.retrieve(DATASET, REQUEST).download()
-        os.chdir("..")
-        
-        path = Path("V2")
-        path.mkdir(exist_ok = True)
-        os.chdir("V2")
-        REQUEST = {
-            "variable" : VARIABLES2,
-            "year" : year,
-            "month" : month,
-            "day" : DAY, 
-            "time" : TIME, 
-            "data_format" : "netcdf", 
-            "download_format" : "unarchived",
-            "area" : AREA,
-        }
-        if not os.listdir():
-            client.retrieve(DATASET, REQUEST).download()
-        os.chdir("..")
-        
-        os.chdir("..")
-    os.chdir("..")
+            request = {
+                "variable": variables,
+                "year": year,
+                "month": month,
+                "day": DAY,
+                "time": TIME,
+                "data_format": "netcdf",
+                "download_format": "unarchived",
+                "area": AREA,
+            }
+
+            if not any(target_dir.iterdir()):
+                target = str(target_dir / "data.nc")
+                client.retrieve(DATASET, request).download(target)
