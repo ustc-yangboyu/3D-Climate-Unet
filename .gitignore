@@ -4,13 +4,8 @@ __pycache__/
 *.pyo
 
 # Data files (large raw and processed data)
-data/
-pt_data/
 *.pt
 *.nc
-
-# Model checkpoints
-checkpoints/
 
 # IDE / editor settings
 .vscode/
