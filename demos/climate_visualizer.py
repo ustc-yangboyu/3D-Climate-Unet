@@ -3,6 +3,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import torch
+import os
 
 from src.config import DEVICE
 from src.dataset import ClimateDataset
@@ -18,7 +19,7 @@ class ClimateVisualizer:
         'ssr', 'sp', 'stl1', 'sshf', 'swvl1', 'lmlt'
     ]
 
-    def __init__(self, model_path: str = "checkpoints/ckpt_final.pt"):
+    def __init__(self, model_path: str = "checkpoints/ckpt_epoch_11.pt"):
         self.device = DEVICE
         self.dataset = ClimateDataset(
             data_path="pt_data/era5_data.pt",
@@ -148,7 +149,7 @@ class ClimateVisualizer:
         return fig, ani
 
 
-def main():
+if __name__ == "__main__":
     visualizer = ClimateVisualizer()
     os.makedirs('demos', exist_ok=True)
 
@@ -163,7 +164,3 @@ def main():
     fig, ani = visualizer.create_animation(sample_idx = 0, channel=0)
     ani.save('demos/prediction_animation.gif', writer='pillow', fps=2, dpi=100)
     plt.close(fig)
-
-if __name__ == "__main__":
-    import os
-    main()

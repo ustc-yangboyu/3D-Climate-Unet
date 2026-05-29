@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
-
 from torch.utils.data import Dataset
+from torchvision import transforms
 import torch
-
-from src.config import TRAIN_RATIO, VAL_RATIO
 
 
 class ClimateDataset(Dataset):
@@ -29,24 +27,20 @@ class ClimateDataset(Dataset):
 
         mean = self.data.mean(dim = [0, 2, 3])
         std = self.data.std(dim = [0, 2, 3])
-        self.mean = mean
-        self.std = std
-        self.data = (self.data - mean.view(1, -1, 1, 1)) / std.view(1, -1, 1, 1)
+        self.transform = transforms.Compose([transforms.Normalize(mean, std)])
+        self.data = self.transform(self.data)
 
         total_times = self.data.shape[0]
-        total_samples = total_times - 84
+        test_hours = int((total_times - 84) * 0.05)
+        train_end = total_times - test_hours
 
-        train_end = int(total_samples * TRAIN_RATIO)
-        val_end = train_end + int(total_samples * VAL_RATIO)
+        self.train_indices = torch.tensor(range(0, train_end - 84, 1))
+        random_indices = torch.randperm(self.train_indices.size(0))
+        self.train_indices = self.train_indices[random_indices]
 
-        self.train_indices = torch.tensor(range(0, train_end, 1))
-        self.train_indices = self.train_indices[torch.randperm(self.train_indices.size(0))]
-
-        self.val_indices = torch.tensor(range(train_end, val_end, 1))
-        self.val_indices = self.val_indices[torch.randperm(self.val_indices.size(0))]
-
-        self.test_indices = torch.tensor(range(val_end, total_samples, 1))
-        self.test_indices = self.test_indices[torch.randperm(self.test_indices.size(0))]
+        self.test_indices = torch.tensor(range(train_end, total_times - 84, 1))
+        random_indices = torch.randperm(self.test_indices.size(0))
+        self.test_indices = self.test_indices[random_indices]
 
     def idx2time(self, idx: int) -> tuple[int, int, int]:
         start = datetime(2020, 1, 1)
@@ -56,16 +50,12 @@ class ClimateDataset(Dataset):
     def __len__(self) -> int:
         if self.split == "train":
             return len(self.train_indices)
-        elif self.split == "val":
-            return len(self.val_indices)
         else:
             return len(self.test_indices)
 
     def __getitem__(self, idx: int) -> dict:
         if self.split == "train":
             time_idx = self.train_indices[idx]
-        elif self.split == "val":
-            time_idx = self.val_indices[idx]
         else:
             time_idx = self.test_indices[idx]
 
@@ -84,21 +74,18 @@ class ClimateDataset(Dataset):
 
 
 if __name__ == "__main__":
-    train_ds = ClimateDataset(split="train")
-    val_ds = ClimateDataset(split="val")
-    test_ds = ClimateDataset(split="test")
+    train_ds = ClimateDataset(split = "train")
+    test_ds = ClimateDataset(split = "test")
 
     print(f"训练集样本数: {len(train_ds)}")
-    print(f"验证集样本数: {len(val_ds)}")
     print(f"测试集样本数: {len(test_ds)}")
 
     train_start = train_ds.train_indices[0]
     train_end = train_ds.train_indices[-1] + 72
-    val_start = val_ds.val_indices[0]
     test_start = test_ds.test_indices[0]
 
-    print(f"时间分离 train→val: {train_end <= val_start}")
-    print(f"时间分离 val→test: {val_ds.val_indices[-1] + 72 <= test_start}")
+    print(f"测试集开始时间: {test_start}")
+    print(f"时间分离: {train_end <= test_start}")
 
     sample = train_ds[0]
     print(f"Input shape: {sample['input'].shape}")

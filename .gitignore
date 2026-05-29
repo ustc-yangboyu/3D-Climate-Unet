@@ -12,8 +12,5 @@ pt_data/
 # Model checkpoints
 checkpoints/
 
-# Generated output
-outputs/
-
 # IDE / editor settings
 .vscode/

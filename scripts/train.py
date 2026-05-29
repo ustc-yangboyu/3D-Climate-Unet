@@ -1,26 +1,42 @@
-import argparse
-import os
-
+from src.config import DEVICE, PT_DATA_DIR, PT_DATA_FILE, TERRAIN_DATA_FILE, BATCH_SIZE, ACCUMULATE_STEPS, NUM_EPOCHS, LEARNING_RATE, WEIGHT_DECAY
 from torch.utils.data import DataLoader
 from src.dataset import ClimateDataset
 from src.models import ClimateUNet
-from src.config import DEVICE, PT_DATA_DIR, PT_DATA_FILE, TERRAIN_DATA_FILE, BATCH_SIZE, ACCUMULATE_STEPS, NUM_EPOCHS, LEARNING_RATE, WEIGHT_DECAY
+from src.animator import Animator
 import torch.optim as optim
 import torch.nn as nn
 from tqdm import tqdm
-from src.animator import Animator
+import argparse
 import torch
+import os
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train ClimateUNet model")
-    parser.add_argument("--resume", "--ckpt", type=str, default=None, dest="resume",
-                        help="Path to checkpoint to resume from")
-    parser.add_argument("--epochs", type=int, default=NUM_EPOCHS,
-                        help=f"Number of training epochs (default: {NUM_EPOCHS})")
-    parser.add_argument("--batch-size", type=int, default=BATCH_SIZE,
-                        help=f"Batch size (default: {BATCH_SIZE})")
-    parser.add_argument("--accumulate-steps", type=int, default=ACCUMULATE_STEPS,
-                        help=f"Gradient accumulation steps (default: {ACCUMULATE_STEPS})")
+    parser = argparse.ArgumentParser(description = "Train ClimateUNet model")
+    parser.add_argument(
+        "--resume",
+        type = str, 
+        default = None, 
+        dest = "resume",
+        help = "Path to checkpoint to resume from"
+    )
+    parser.add_argument(
+        "--epochs", 
+        type = int, 
+        default = NUM_EPOCHS,
+        help = f"Number of training epochs (default: {NUM_EPOCHS})"
+    )
+    parser.add_argument(
+        "--batch-size", 
+        type = int, 
+        default = BATCH_SIZE,
+        help = f"Batch size (default: {BATCH_SIZE})"
+    )
+    parser.add_argument(
+        "--accumulate-steps", 
+        type = int, 
+        default = ACCUMULATE_STEPS,
+        help = f"Gradient accumulation steps (default: {ACCUMULATE_STEPS})"
+    )
     args = parser.parse_args()
 
     train_dataset = ClimateDataset(
@@ -31,7 +47,7 @@ if __name__ == "__main__":
     eval_dataset = ClimateDataset(
         data_path=PT_DATA_DIR + "/" + PT_DATA_FILE,
         terrain_path=PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
-        split="val"
+        split="test"
     )
     model = ClimateUNet(
         terrain_data = train_dataset.terrain.repeat(2, 1, 1), 

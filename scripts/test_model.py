@@ -1,16 +1,23 @@
-import argparse
-
+from src.config import DEVICE, PT_DATA_DIR, PT_DATA_FILE, TERRAIN_DATA_FILE
 from src.dataset import ClimateDataset
 from src.models import ClimateUNet
-from src.config import DEVICE, PT_DATA_DIR, PT_DATA_FILE, TERRAIN_DATA_FILE
-import torch
 from tqdm import tqdm
+import argparse
+import torch
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test ClimateUNet model")
-    parser.add_argument("--ckpt", type=str, default="checkpoints/ckpt_final.pt",
-                        help="Path to checkpoint (default: checkpoints/ckpt_final.pt)")
+    parser.add_argument(
+        "--ckpt", 
+        type = str, 
+        default = "checkpoints/ckpt_final.pt",
+        help = "Path to checkpoint (default: checkpoints/ckpt_final.pt)"
+    )
     args = parser.parse_args()
+    data = torch.load(PT_DATA_DIR + "/" + PT_DATA_FILE)[:, :, 1:, :-1]
+    std = data.std(dim = [0, 2, 3])
+    mean = data.mean(dim = [0, 2, 3])
+
     device = DEVICE
 
     dataset = ClimateDataset(
@@ -56,7 +63,7 @@ if __name__ == "__main__":
 
             max_err = (t2m_pred - t2m_true).abs().max().item()
             mean_err = (t2m_pred - t2m_true).abs().mean().item()
-            true_t2m_err = mean_err * dataset.std[0].item()
+            true_t2m_err = mean_err * std[0].item()
 
             all_max_errs.append(max_err)
             all_mean_errs.append(mean_err)
