@@ -33,7 +33,7 @@ def convert_month(year, month):
     ds1.close()
     ds2.close()
     all_vars = v1_data + v2_data
-    stacked = np.stack(all_vars, axis=0)
+    stacked = np.stack(all_vars, axis = 0)
     result = np.transpose(stacked, (1, 0, 2, 3))
     tensor = torch.from_numpy(result).float()
     return tensor
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             print(f"  {year}-{month}: shape {monthly_data.shape}")
 
     final_data = torch.cat(all_data, dim = 0)
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok = True)
     output_path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
     torch.save(final_data, output_path)
 

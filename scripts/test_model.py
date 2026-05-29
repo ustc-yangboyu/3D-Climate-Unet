@@ -30,7 +30,7 @@ if __name__ == "__main__":
         terrain_data = dataset.terrain.repeat(2, 1, 1), 
         static_terrain_data = dataset.terrain
     )
-    checkpoint = torch.load(args.ckpt, map_location=device, weights_only=False)
+    checkpoint = torch.load(args.ckpt, map_location = device, weights_only = False)
     model.load_state_dict(checkpoint["model_state_dict"])
     print(f"Loaded checkpoint from {args.ckpt}")
     model.eval()

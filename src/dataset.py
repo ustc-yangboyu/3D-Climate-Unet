@@ -44,7 +44,7 @@ class ClimateDataset(Dataset):
 
     def idx2time(self, idx: int) -> tuple[int, int, int]:
         start = datetime(2020, 1, 1)
-        t = start + timedelta(hours=int(idx))
+        t = start + timedelta(hours = int(idx))
         return t.month, t.day, t.hour
 
     def __len__(self) -> int:

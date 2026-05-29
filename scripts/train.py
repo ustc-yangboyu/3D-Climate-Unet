@@ -40,14 +40,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     train_dataset = ClimateDataset(
-        data_path=PT_DATA_DIR + "/" + PT_DATA_FILE,
-        terrain_path=PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
+        data_path = PT_DATA_DIR + "/" + PT_DATA_FILE,
+        terrain_path = PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
         split = "train"
     )
     eval_dataset = ClimateDataset(
-        data_path=PT_DATA_DIR + "/" + PT_DATA_FILE,
-        terrain_path=PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
-        split="test"
+        data_path = PT_DATA_DIR + "/" + PT_DATA_FILE,
+        terrain_path = PT_DATA_DIR + "/" + TERRAIN_DATA_FILE,
+        split = "test"
     )
     model = ClimateUNet(
         terrain_data = train_dataset.terrain.repeat(2, 1, 1), 
@@ -62,14 +62,14 @@ if __name__ == "__main__":
     device = DEVICE
     model.to(device)
 
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_dataset, batch_size=args.batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size = args.batch_size, shuffle = False)
+    eval_loader = DataLoader(eval_dataset, batch_size = args.batch_size, shuffle = False)
     accumulate_steps = args.accumulate_steps
 
     start_epoch = 0
     if args.resume:
         print(f"Loading checkpoint from {args.resume} ...")
-        checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
+        checkpoint = torch.load(args.resume, map_location = device, weights_only = False)
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         start_epoch = checkpoint["epoch"] + 1
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         if num_train_steps > 0:
             train_loss = total_train_loss / num_train_steps
 
-        os.makedirs("checkpoints", exist_ok=True)
+        os.makedirs("checkpoints", exist_ok = True)
         checkpoint = {
             "model_state_dict": model.state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
         model.eval()
         with torch.no_grad():
-            pbar = tqdm(eval_loader, desc=f"Epoch {epoch+1}/{args.epochs} [Eval]")
+            pbar = tqdm(eval_loader, desc = f"Epoch {epoch+1}/{args.epochs} [Eval]")
             for idx, data in enumerate(pbar):
                 input_data = data["input"].to(device)
                 output_data = data["output"].to(device)

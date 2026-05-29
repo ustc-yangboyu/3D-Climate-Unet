@@ -14,9 +14,9 @@ class ConvBlock(nn.Module):
     ):
         super().__init__()
         pad = kernel_size // 2
-        self.conv3d = nn.Conv3d(in_channels, out_channels, kernel_size, stride, padding=pad)
+        self.conv3d = nn.Conv3d(in_channels, out_channels, kernel_size, stride, padding = pad)
         self.gn = nn.GroupNorm(8, out_channels)
-        self.silu = nn.SiLU(inplace=True)
+        self.silu = nn.SiLU(inplace = True)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv3d(x)
@@ -28,7 +28,7 @@ class ConvBlock(nn.Module):
 class Downsample3D(nn.Module):
     def __init__(self, out_channels):
         super().__init__()
-        self.conv = nn.Conv3d(out_channels, out_channels, kernel_size=3, stride=2, padding=1)
+        self.conv = nn.Conv3d(out_channels, out_channels, kernel_size = 3, stride = 2, padding = 1)
 
     def forward(self, x):
         return self.conv(x)
@@ -37,7 +37,7 @@ class Downsample3D(nn.Module):
 class Upsample3D(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.conv = nn.ConvTranspose3d(in_channels, out_channels, kernel_size=2, stride=2)
+        self.conv = nn.ConvTranspose3d(in_channels, out_channels, kernel_size = 2, stride = 2)
 
     def forward(self, x):
         return self.conv(x)
@@ -60,7 +60,7 @@ class EncoderBlock(nn.Module):
 
 
 class DecoderBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, skip_channels=0, use_up=True):
+    def __init__(self, in_channels, out_channels, skip_channels = 0, use_up = True):
         super().__init__()
         self.use_up = use_up
         if use_up:
@@ -73,7 +73,7 @@ class DecoderBlock(nn.Module):
         if self.use_up:
             x = self.up(x)
         if skip is not None:
-            x = torch.cat([x, skip], dim=1)
+            x = torch.cat([x, skip], dim = 1)
         x = self.conv1(x)
         x = self.channel_attn(x)
         x = self.conv2(x)

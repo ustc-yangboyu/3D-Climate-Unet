@@ -12,7 +12,7 @@ class PositionalEmbedding(nn.Module):
     ):
         super().__init__()
         pe = torch.zeros(max_len, embed_dim)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        position = torch.arange(0, max_len, dtype = torch.float).unsqueeze(1)
         div_term = torch.exp(torch.arange(0, embed_dim, 2).float() * (-torch.log(torch.tensor(10000.0)) / embed_dim))
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
@@ -48,7 +48,7 @@ class TimeEmbedding(nn.Module):
         day_embedding = self.day_embedding(time['day'])
         month_embedding = self.month_embedding(time['month'])
 
-        x = torch.cat([hour_embedding, day_embedding, month_embedding], dim=-1)
+        x = torch.cat([hour_embedding, day_embedding, month_embedding], dim = -1)
         x = self.projection1(x)
         x = self.GELU(x)
         x = self.projection2(x)
@@ -64,4 +64,4 @@ class TerrainEmbedding(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         B, _, T, H, W = x.shape
         terrain = self.terrain.unsqueeze(0).expand(B, -1, T, -1, -1)
-        return torch.cat([terrain, x], dim=1)
+        return torch.cat([terrain, x], dim = 1)

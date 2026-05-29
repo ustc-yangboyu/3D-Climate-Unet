@@ -21,8 +21,8 @@ class ClimateUNet(nn.Module):
         self.W = W
         self.base_channels = base_channels
 
-        self.time_embed = TimeEmbedding(embed_dim=64)
-        self.terrain_embed = TerrainEmbedding(terrain_data=terrain_data)
+        self.time_embed = TimeEmbedding(embed_dim = 64)
+        self.terrain_embed = TerrainEmbedding(terrain_data = terrain_data)
         self.register_buffer('static_terrain', static_terrain_data)
         self.time_proj = nn.Sequential(
             nn.Linear(64, base_channels),
@@ -48,10 +48,10 @@ class ClimateUNet(nn.Module):
 
         self.conv_out = ConvBlock(base_channels, base_channels)
         self.output_proj = nn.Sequential(
-            nn.Conv3d(base_channels, base_channels, kernel_size=(3, 3, 3), stride=(6, 1, 1), padding=(1, 1, 1)),
+            nn.Conv3d(base_channels, base_channels, kernel_size = (3, 3, 3), stride = (6, 1, 1), padding = (1, 1, 1)),
             nn.GroupNorm(8, base_channels),
             nn.SiLU(),
-            nn.Conv3d(base_channels, out_channels, kernel_size=1)
+            nn.Conv3d(base_channels, out_channels, kernel_size = 1)
         )
 
     def _add_time_embed(self, x, time_embed):
@@ -92,9 +92,9 @@ class ClimateUNet(nn.Module):
         static_terrain = static_terrain.unsqueeze(0)
         static_terrain = static_terrain.expand(x.size(0), x.size(2), -1, -1, -1)
         static_terrain = static_terrain.permute(0, 2, 1, 3, 4)
-        terrain = torch.cat([terrain, static_terrain], dim=1)
+        terrain = torch.cat([terrain, static_terrain], dim =   1)
 
-        x = torch.cat([terrain, x], dim=1)
+        x = torch.cat([terrain, x], dim = 1)
         x = self.input_proj(x)
         x = self._add_time_embed(x, time_embed)
 

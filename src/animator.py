@@ -7,14 +7,24 @@ except ImportError:
     HAS_IPYTHON = False
 
 class Animator:
-    def __init__(self, xlabel=None, ylabel=None, legend=None, xlim=None,
-                 ylim=None, xscale='linear', yscale='linear',
-                 fmts=('-', 'm--', 'g-.', 'r:'), nrows=1, ncols=1,
-                 figsize=(3.5, 2.5)):
+    def __init__(
+        self, 
+        xlabel = None, 
+        ylabel = None, 
+        legend = None, 
+        xlim = None,
+        ylim = None, 
+        xscale = 'linear', 
+        yscale = 'linear',
+        fmts = ('-', 'm--', 'g-.', 'r:'), 
+        nrows = 1, 
+        ncols = 1,
+        figsize = (3.5, 2.5)
+    ):
         if legend is None:
             legend = []
 
-        self.fig, self.axes = plt.subplots(nrows, ncols, figsize=figsize)
+        self.fig, self.axes = plt.subplots(nrows, ncols, figsize = figsize)
         if nrows * ncols == 1:
             self.axes = [self.axes]
 
@@ -25,7 +35,7 @@ class Animator:
         self.display_handle = None
         self.config_axes()
         if HAS_IPYTHON:
-            self.display_handle = display(self.fig, display_id=True)
+            self.display_handle = display(self.fig, display_id = True)
 
     def _set_axes(self, ax, xlabel, ylabel, xlim, ylim, xscale, yscale, legend):
         ax.set_xlabel(xlabel)
@@ -67,7 +77,7 @@ class Animator:
         plt.pause(0.001)
 
     def show(self):
-        plt.show(block=False)
+        plt.show(block = False)
 
     def close(self):
         plt.close(self.fig)
